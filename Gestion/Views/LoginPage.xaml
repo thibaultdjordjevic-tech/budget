@@ -1,0 +1,27 @@
+﻿<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="Gestion.Views.LoginPage">
+
+    <VerticalStackLayout Padding="30" Spacing="15">
+
+        <Label
+            Text="Connexion"
+            FontSize="28"
+            HorizontalOptions="Center"/>
+
+        <Entry Placeholder="Email"
+               Text="{Binding Email}" />
+
+        <Entry Placeholder="Mot de passe"
+               IsPassword="True"
+               Text="{Binding Password}" />
+
+        <Button Text="Se connecter"
+                Command="{Binding LoginCommand}" />
+
+        <Button Text="Créer un compte"
+                Command="{Binding GoToRegisterCommand}" />
+
+    </VerticalStackLayout>
+</ContentPage>
