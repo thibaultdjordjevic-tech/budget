@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- SQLite : nécessaire pour les attributs [Table], [PrimaryKey], [Ignore], etc. -->
+    <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
+    <PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <!-- Lien direct vers les fichiers modèles du projet principal (sans référencer MAUI) -->
+  <ItemGroup>
+    <Compile Include="..\BudgetControl\Models\Transaction.cs" Link="Models\Transaction.cs" />
+    <Compile Include="..\BudgetControl\Models\Budget.cs"      Link="Models\Budget.cs" />
+    <Compile Include="..\BudgetControl\Models\User.cs"        Link="Models\User.cs" />
+  </ItemGroup>
+
+</Project>

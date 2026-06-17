@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetControl.Views.AddTransactionPage"
+             BackgroundColor="White"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <!-- Montant -->
+            <Label Text="Montant (€)" FontSize="13" TextColor="#90A4AE"/>
+            <Border StrokeShape="RoundRectangle 10"
+                    Stroke="#E0E0E0" StrokeThickness="1" Padding="12,0">
+                <Entry Placeholder="Ex : 45.50"
+                       Text="{Binding MontantText}"
+                       Keyboard="Numeric"
+                       FontSize="16" TextColor="#2E2E2E"
+                       PlaceholderColor="#90A4AE"/>
+            </Border>
+
+            <!-- Date -->
+            <Label Text="Date" FontSize="13" TextColor="#90A4AE"/>
+            <DatePicker Date="{Binding Date}"
+                        Format="dd/MM/yyyy"
+                        TextColor="#2E2E2E" BackgroundColor="#F5F5F5"/>
+
+            <!-- Catégorie (dépenses uniquement) -->
+            <VerticalStackLayout IsVisible="{Binding IsDepense}" Spacing="8">
+                <Label Text="Catégorie" FontSize="13" TextColor="#90A4AE"/>
+                <Border StrokeShape="RoundRectangle 10"
+                        Stroke="#E0E0E0" StrokeThickness="1"
+                        BackgroundColor="#F5F5F5" Padding="12,0"
+                        HeightRequest="48">
+                    <Grid ColumnDefinitions="*,Auto" VerticalOptions="Center">
+                        <Label Grid.Column="0"
+                               Text="{Binding CategorieLabel}"
+                               TextColor="#2E2E2E"
+                               VerticalOptions="Center"/>
+                        <Label Grid.Column="1"
+                               Text="▼"
+                               FontSize="12"
+                               TextColor="#90A4AE"
+                               VerticalOptions="Center"/>
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChoisirCategorieCommand}"/>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- Description / Source (facultatif) -->
+            <Label Text="Description / Source (facultatif)" FontSize="13" TextColor="#90A4AE"/>
+            <Border StrokeShape="RoundRectangle 10"
+                    Stroke="#E0E0E0" StrokeThickness="1" Padding="12,0">
+                <Entry Text="{Binding Description}"
+                       Placeholder="Facultatif (ex : courses, salaire…)"
+                       FontSize="15" TextColor="#2E2E2E"
+                       PlaceholderColor="#90A4AE"/>
+            </Border>
+
+            <!-- Boutons -->
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,16,0,0">
+                <Button Grid.Column="0"
+                        Text="Annuler"
+                        Command="{Binding AnnulerCommand}"
+                        BackgroundColor="#F5F5F5" TextColor="#2E2E2E"
+                        CornerRadius="25" HeightRequest="50"/>
+                <Button Grid.Column="1"
+                        Text="Enregistrer"
+                        Command="{Binding SauvegarderCommand}"
+                        Style="{StaticResource PrimaryButton}"/>
+            </Grid>
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               Color="#1565C0" HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

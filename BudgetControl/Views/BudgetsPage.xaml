@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetControl.Views.BudgetsPage"
+             Title="Budgets">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ── Navigation mois ── -->
+        <Frame Grid.Row="0"
+               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#161B22}"
+               BorderColor="{AppThemeBinding Light=#E8ECF4, Dark=#30363D}"
+               CornerRadius="0" Padding="16,10" HasShadow="False">
+            <VerticalStackLayout Spacing="4">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Button Grid.Column="0" Text="‹"
+                            Command="{Binding MoisPrecedentCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="42" Padding="24"/>
+                    <Label Grid.Column="1"
+                           Text="{Binding PeriodeLabel}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           FontSize="34" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                    <Button Grid.Column="2" Text="›"
+                            Command="{Binding MoisSuivantCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="42" Padding="24"/>
+                </Grid>
+                <Label Text="Appuyez sur une catégorie pour définir son budget"
+                       FontSize="15" HorizontalOptions="Center"
+                       TextColor="{AppThemeBinding Light=#94A3B8, Dark=#4B5563}"/>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Liste des budgets -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Budgets}"
+                        SelectionMode="None"
+                        Margin="12,8,12,0">
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Style="{StaticResource Card}" Margin="0" Padding="16,14">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type ContentPage}},
+                                          Path=BindingContext.ModifierBudgetCommand}"
+                                CommandParameter="{Binding .}"/>
+                        </Frame.GestureRecognizers>
+
+                        <VerticalStackLayout Spacing="10">
+
+                            <!-- En-tête : catégorie + budget -->
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+
+                                <!-- Icône catégorie -->
+                                <Border Grid.Column="0"
+                                        StrokeShape="RoundRectangle 10"
+                                        StrokeThickness="0"
+                                        HeightRequest="40" WidthRequest="40"
+                                        BackgroundColor="{AppThemeBinding Light=#F0F4FF, Dark=#1E2A3A}">
+                                    <Label Text="{Binding CategorieIcone}"
+                                           FontSize="20"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center"/>
+                                </Border>
+
+                                <!-- Nom catégorie -->
+                                <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                    <Label Text="{Binding CategorieNom}"
+                                           FontSize="14" FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+
+                                    <!-- Badge annuel / mensuel -->
+                                    <Border IsVisible="{Binding HasBudget}"
+                                            BackgroundColor="{Binding BadgeCouleur}"
+                                            StrokeShape="RoundRectangle 6"
+                                            StrokeThickness="0"
+                                            Padding="6,2"
+                                            HorizontalOptions="Start">
+                                        <Label Text="{Binding BadgeLabel}"
+                                               FontSize="10" TextColor="White"/>
+                                    </Border>
+                                </VerticalStackLayout>
+
+                                <!-- Budget + restant -->
+                                <VerticalStackLayout Grid.Column="2" HorizontalOptions="End" Spacing="2">
+                                    <Label Text="{Binding BudgetPrevu, StringFormat='{0:C0}'}"
+                                           FontSize="16" FontAttributes="Bold"
+                                           HorizontalOptions="End"
+                                           TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                                    <Label Text="{Binding RestantFormate}"
+                                           FontSize="12" HorizontalOptions="End"
+                                           TextColor="{Binding CouleurBarre}"/>
+                                </VerticalStackLayout>
+
+                            </Grid>
+
+                            <!-- Barre de progression -->
+                            <ProgressBar Progress="{Binding Progression}"
+                                         ProgressColor="{Binding CouleurBarre}"
+                                         HeightRequest="6"/>
+
+                            <!-- Ligne bas : dépensé + aucun budget -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0"
+                                       Text="{Binding Depenses, StringFormat='Dépensé : {0:C0}'}"
+                                       FontSize="12"
+                                       TextColor="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+                                <Label Grid.Column="1"
+                                       Text="Appuyer pour définir ›"
+                                       IsVisible="{Binding HasBudget, Converter={StaticResource InverseBoolConverter}}"
+                                       FontSize="11"
+                                       TextColor="{StaticResource Primary}"
+                                       FontAttributes="Italic"/>
+                            </Grid>
+
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </Grid>
+
+</ContentPage>

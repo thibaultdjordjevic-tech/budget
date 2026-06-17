@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetControl.Views.RevenusPage"
+             Title="Revenus">
+
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*, Auto" Padding="0,0,16,0" VerticalOptions="Center">
+
+            <Label Grid.Column="0" 
+                Text="Dépenses" 
+                FontSize="20" FontAttributes="Bold" 
+                TextColor="White" 
+                VerticalOptions="Center"/>
+
+            <Label Grid.Column="1" 
+                Text="+" 
+                FontSize="32" FontAttributes="Bold" 
+                TextColor="White" 
+                VerticalOptions="Center" 
+                Margin="0,0,0,4">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding NouveauRevenuCommand}"/>
+                </Label.GestureRecognizers>
+            </Label>
+
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <BoxView Grid.RowSpan="2"
+                 BackgroundColor="#99000000"
+                 IsVisible="{Binding IsFormVisible}"
+                 ZIndex="5">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AnnulerCommand}"/>
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- Formulaire overlay -->
+        <Frame Grid.RowSpan="2" IsVisible="{Binding IsFormVisible}"
+               CornerRadius="24" Padding="24,20" Margin="12" HasShadow="True" ZIndex="10"
+               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#161B22}"
+               BorderColor="{AppThemeBinding Light=#E8ECF4, Dark=#30363D}"
+               VerticalOptions="Center">
+            <ScrollView>
+                <VerticalStackLayout Spacing="16">
+
+                    <Label Text="{Binding Formulaire.Id, Converter={StaticResource IdToTitleConverter}, ConverterParameter='Revenu'}"
+                           FontSize="20" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+
+                    <!-- Montant -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Montant (€)" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry Placeholder="Ex : 1 500"
+                                   Text="{Binding Formulaire.Montant}"
+                                   Keyboard="Numeric" FontSize="13"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Date -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Date" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+                        <Border Style="{StaticResource InputBorder}" Padding="14,4">
+                            <DatePicker Date="{Binding Formulaire.Date}" Format="dd/MM/yyyy"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Source -->
+                    <VerticalStackLayout Spacing="6">
+                        <Label Text="Source (facultatif)" FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+                        <Border Style="{StaticResource InputBorder}">
+                            <Entry Placeholder="Ex : Salaire, Freelance…" FontSize="15"
+                                   Text="{Binding Formulaire.Description}"/>
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Boutons -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,8,0,0">
+                        <Button Grid.Column="0" Text="Annuler"
+                                Command="{Binding AnnulerCommand}"
+                                Style="{StaticResource SecondaryButton}"/>
+                        <Button Grid.Column="1" Text="Enregistrer"
+                                Command="{Binding SauvegarderCommand}"
+                                BackgroundColor="{StaticResource IncomeGreen}"
+                                TextColor="White" CornerRadius="14"
+                                HeightRequest="52" FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Supprimer -->
+                    <Button Text="Supprimer"
+                            Command="{Binding SupprimerCommand}"
+                            IsVisible="{Binding Formulaire.Id, Converter={StaticResource IdToBoolConverter}}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource ExpenseRed}" FontSize="13"/>
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Frame>
+
+        <!-- Navigation mois -->
+        <Frame Grid.Row="0"
+               BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#161B22}"
+               BorderColor="{AppThemeBinding Light=#E8ECF4, Dark=#30363D}"
+               CornerRadius="0" Padding="16,10" HasShadow="False">
+            <VerticalStackLayout Spacing="6">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Button Grid.Column="0" Text="‹"
+                            Command="{Binding MoisPrecedentCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="42" Padding="24"/>
+                    <Label Grid.Column="1"
+                           Text="{Binding PeriodeLabel}"
+                           HorizontalOptions="Center" VerticalOptions="Center"
+                           FontSize="34" FontAttributes="Bold"
+                           TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                    <Button Grid.Column="2" Text="›"
+                            Command="{Binding MoisSuivantCommand}"
+                            BackgroundColor="Transparent"
+                            TextColor="{StaticResource Primary}"
+                            FontSize="42" Padding="24"/>
+                </Grid>
+
+                <!-- Total du mois -->
+                <Border BackgroundColor="{AppThemeBinding Light=#F0FDF4, Dark=#0D2818}"
+                        StrokeShape="RoundRectangle 10"
+                        StrokeThickness="0" Padding="12,8"
+                        HorizontalOptions="Center">
+                    <Label Text="{Binding TotalFormate, StringFormat='Total : +{0}'}"
+                           FontSize="18" FontAttributes="Bold"
+                           TextColor="{StaticResource IncomeGreen}"
+                           HorizontalOptions="Center"/>
+                </Border>
+            </VerticalStackLayout>
+        </Frame>
+
+        <!-- Liste des revenus -->
+        <CollectionView Grid.Row="1"
+                        ItemsSource="{Binding Revenus}"
+                        SelectedItem="{Binding RevenuSelectionne}"
+                        SelectionMode="Single"
+                        Margin="12,8,12,0">
+
+            <CollectionView.EmptyView>
+                <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Margin="0,48" Spacing="10">
+                    <Label Text="💵" FontSize="52" HorizontalOptions="Center"/>
+                    <Label Text="Aucun revenu ce mois-ci"
+                           FontSize="15" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#94A3B8, Dark=#4B5563}"/>
+                    <Label Text="Appuyez sur + pour en ajouter un"
+                           FontSize="13" HorizontalOptions="Center"
+                           TextColor="{AppThemeBinding Light=#CBD5E1, Dark=#374151}"/>
+                </VerticalStackLayout>
+            </CollectionView.EmptyView>
+
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Style="{StaticResource Card}" Margin="0,5" Padding="14,12">
+                        <Grid ColumnDefinitions="48,*,Auto" ColumnSpacing="12">
+
+                            <!-- Icône -->
+                            <Border Grid.Column="0"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0"
+                                    HeightRequest="48" WidthRequest="48"
+                                    BackgroundColor="#E6FBF4">
+                                <Label Text="💵"
+                                       FontSize="24"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"/>
+                            </Border>
+
+                            <!-- Détails -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                <Label Text="{Binding Description}"
+                                       FontSize="14" FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Date, StringFormat='{0:dd MMM yyyy}'}"
+                                       FontSize="11"
+                                       TextColor="{AppThemeBinding Light=#94A3B8, Dark=#4B5563}"/>
+                            </VerticalStackLayout>
+
+                            <!-- Montant -->
+                            <Label Grid.Column="2"
+                                   Text="{Binding Montant, StringFormat='+{0:C}'}"
+                                   FontSize="16" FontAttributes="Bold"
+                                   TextColor="{StaticResource IncomeGreen}"
+                                   VerticalOptions="Center"/>
+
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

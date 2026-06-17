@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetControl.Views.VueGlobalePage"
+             BackgroundColor="#F8F9FA"
+             Title="Vue globale">
+
+    <RefreshView Command="{Binding RefreshCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Padding="20" Spacing="16">
+
+                <!-- Navigation mois (cohérent avec BudgetsPage/SynthesePage) -->
+                <Frame BackgroundColor="White" CornerRadius="16" Padding="8,4" HasShadow="True">
+                    <Grid ColumnDefinitions="Auto,*,Auto">
+                        <Button Grid.Column="0" Text="‹"
+                                Command="{Binding MoisPrecedentCommand}"
+                                BackgroundColor="Transparent" TextColor="#1565C0" FontSize="26"
+                                Padding="8,0"/>
+                        <Label Grid.Column="1" Text="{Binding PeriodeLabel}"
+                               HorizontalOptions="Center" VerticalOptions="Center"
+                               FontSize="15" FontAttributes="Bold" TextColor="#2E2E2E"/>
+                        <Button Grid.Column="2" Text="›"
+                                Command="{Binding MoisSuivantCommand}"
+                                BackgroundColor="Transparent" TextColor="#1565C0" FontSize="26"
+                                Padding="8,0"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Cartes résumé -->
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                    <Frame Grid.Column="0" BackgroundColor="White" CornerRadius="16" Padding="14" HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Revenus" FontSize="11" TextColor="#90A4AE"/>
+                            <Label Text="{Binding TotalRevenus, StringFormat='{0:C}'}"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#81C784"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Column="1" BackgroundColor="White" CornerRadius="16" Padding="14" HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Dépenses" FontSize="11" TextColor="#90A4AE"/>
+                            <Label Text="{Binding TotalDepenses, StringFormat='{0:C}'}"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#E57373"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Column="2" BackgroundColor="White" CornerRadius="16" Padding="14" HasShadow="True">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Solde" FontSize="11" TextColor="#90A4AE"/>
+                            <Label Text="{Binding Solde, StringFormat='{0:C}'}"
+                                   FontSize="14" FontAttributes="Bold"
+                                   TextColor="{Binding CouleurSolde}"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+
+                <!-- Graphique revenus vs dépenses -->
+                <Frame BackgroundColor="White" CornerRadius="16" Padding="16" HasShadow="True">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Revenus vs Dépenses"
+                               FontSize="15" FontAttributes="Bold" TextColor="#2E2E2E"/>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="Revenus" FontSize="12" TextColor="#81C784"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding TotalRevenus, StringFormat='{0:C}'}"
+                                       FontSize="12" TextColor="#81C784"/>
+                            </Grid>
+                            <ProgressBar Progress="{Binding ProgressRevenus}"
+                                         ProgressColor="#81C784" HeightRequest="12"/>
+                        </VerticalStackLayout>
+
+                        <VerticalStackLayout Spacing="4">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0" Text="Dépenses" FontSize="12" TextColor="#E57373"/>
+                                <Label Grid.Column="1"
+                                       Text="{Binding TotalDepenses, StringFormat='{0:C}'}"
+                                       FontSize="12" TextColor="#E57373"/>
+                            </Grid>
+                            <ProgressBar Progress="{Binding ProgressDepenses}"
+                                         ProgressColor="#E57373" HeightRequest="12"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- Répartition par catégorie -->
+                <Label Text="Répartition par catégorie"
+                       FontSize="16" FontAttributes="Bold" TextColor="#2E2E2E"/>
+
+                <CollectionView ItemsSource="{Binding StatsCategories}" SelectionMode="None">
+                    <CollectionView.EmptyView>
+                        <Label Text="Aucune dépense ce mois-ci 🎉"
+                               TextColor="#90A4AE" HorizontalOptions="Center" Margin="0,24"/>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame BackgroundColor="White" CornerRadius="14"
+                                   Padding="14,12" Margin="0,4" HasShadow="True">
+                                <VerticalStackLayout Spacing="8">
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <Frame Grid.Column="0"
+                                               BackgroundColor="#F0F4FF" CornerRadius="10"
+                                               Padding="6" Margin="0,0,10,0"
+                                               HeightRequest="38" WidthRequest="38"
+                                               HasShadow="False">
+                                            <Label Text="{Binding Icone}"
+                                                   FontSize="18" HorizontalOptions="Center"
+                                                   VerticalOptions="Center"/>
+                                        </Frame>
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                            <Label Text="{Binding Nom}"
+                                                   FontSize="14" FontAttributes="Bold" TextColor="#2E2E2E"/>
+                                            <Label Text="{Binding Label}"
+                                                   FontSize="12" TextColor="#90A4AE"/>
+                                        </VerticalStackLayout>
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Pourcentage, StringFormat='{0:F1}%'}"
+                                               FontSize="13" FontAttributes="Bold"
+                                               TextColor="#1565C0" VerticalOptions="Center"/>
+                                    </Grid>
+
+                                    <ProgressBar Progress="{Binding ProgressValue}"
+                                                 ProgressColor="#1565C0"
+                                                 HeightRequest="6"/>
+
+                                    <Label Text="⚠️ Budget dépassé !"
+                                           TextColor="#E57373" FontSize="12" FontAttributes="Bold"
+                                           IsVisible="{Binding DepaseBudget}"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+</ContentPage>

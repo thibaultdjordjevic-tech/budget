@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BudgetControl.Views.MainPage"
+             Title="Accueil">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="🌙" Clicked="OnThemeToggleClicked" Order="Primary"/>
+        <ToolbarItem Text="Déconnexion" Command="{Binding LogoutCommand}" Order="Secondary"/>
+    </ContentPage.ToolbarItems>
+
+    <RefreshView Command="{Binding LoadDataCommand}" IsRefreshing="{Binding IsBusy}">
+        <ScrollView>
+            <VerticalStackLayout Padding="16,16,16,32" Spacing="20">
+
+                <!-- Bonjour -->
+                <Grid ColumnDefinitions="*,Auto" Margin="4,4,4,0">
+                    <VerticalStackLayout Grid.Column="0">
+                        <Label Text="{Binding NomUtilisateur, StringFormat='Bonjour, {0} 👋'}"
+                               FontSize="22" FontAttributes="Bold"
+                               TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                        <Label Text="Votre tableau de bord financier"
+                               FontSize="13"
+                               TextColor="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!-- Carte : solde avec dégradé -->
+                <Border StrokeShape="RoundRectangle 24" StrokeThickness="0" Padding="24,22">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#4361EE" Offset="0"/>
+                            <GradientStop Color="#5E35B1" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <VerticalStackLayout Spacing="16">
+
+                        <!-- Navigation mois -->
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Button Grid.Column="0" Text="‹"
+                                    Command="{Binding MoisPrecedentCommand}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="White" FontSize="42" Padding="24"/>
+                            <Label Grid.Column="1"
+                                   Text="{Binding PeriodeLabel}"
+                                   HorizontalOptions="Center" VerticalOptions="Center"
+                                   FontSize="38" TextColor="#CCDDFF"/>
+                            <Button Grid.Column="2" Text="›"
+                                    Command="{Binding MoisSuivantCommand}"
+                                    BackgroundColor="Transparent"
+                                    TextColor="White" FontSize="42" Padding="24"/>
+                        </Grid>
+
+                        <!-- Solde central -->
+                        <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                            <Label Text="Solde net"
+                                   FontSize="23" TextColor="#AABBEE"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="{Binding SoldeFormate}"
+                                   FontSize="36" FontAttributes="Bold"
+                                   TextColor="White"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+
+                        <!-- Revenus / Dépenses -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Border Grid.Column="0"
+                                    BackgroundColor="#FFFFFF1A"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0" Padding="14,10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Revenus" FontSize="11" TextColor="#000000"/>
+                                    <Label Text="{Binding TotalRevenusFormate}"
+                                           FontSize="17" FontAttributes="Bold"
+                                           TextColor="#06D6A0"/>
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="1"
+                                    BackgroundColor="#FFFFFF1A"
+                                    StrokeShape="RoundRectangle 14"
+                                    StrokeThickness="0" Padding="14,10">
+                                <VerticalStackLayout Spacing="2">
+                                    <Label Text="Dépenses" FontSize="11" TextColor="#000000"/>
+                                    <Label Text="{Binding TotalDepensesFormate}"
+                                           FontSize="17" FontAttributes="Bold"
+                                           TextColor="#FF8A8A"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ── Accès rapide ── -->
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Accès rapide" Style="{StaticResource SectionTitle}"/>
+                    <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto"
+                          ColumnSpacing="12" RowSpacing="12">
+
+                        <Border Grid.Row="0" Grid.Column="0"
+                                StrokeShape="RoundRectangle 16" StrokeThickness="0"
+                                Padding="16,14">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#FF6B6B" Offset="0"/>
+                                    <GradientStop Color="#EE4444" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateDepensesCommand}"/>
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="💸" FontSize="28"/>
+                                <Label Text="Dépenses" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                <Label Text="Gérer mes dépenses" FontSize="14" TextColor="#FFCCCC"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Row="0" Grid.Column="1"
+                                StrokeShape="RoundRectangle 16" StrokeThickness="0"
+                                Padding="16,14">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#06D6A0" Offset="0"/>
+                                    <GradientStop Color="#05A87D" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateRevenusCommand}"/>
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="💵" FontSize="28"/>
+                                <Label Text="Revenus" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                <Label Text="Mes rentrées d'argent" FontSize="14" TextColor="#CCFFE8"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="0"
+                                StrokeShape="RoundRectangle 16" StrokeThickness="0"
+                                Padding="16,14">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#4361EE" Offset="0"/>
+                                    <GradientStop Color="#364FC7" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateBudgetsCommand}"/>
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="🎯" FontSize="28"/>
+                                <Label Text="Budgets" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                <Label Text="Fixer mes objectifs" FontSize="14" TextColor="#CCDDFF"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Row="1" Grid.Column="1"
+                                StrokeShape="RoundRectangle 16" StrokeThickness="0"
+                                Padding="16,14">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                    <GradientStop Color="#5E35B1" Offset="0"/>
+                                    <GradientStop Color="#4527A0" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding NavigateSyntheseCommand}"/>
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout Spacing="6">
+                                <Label Text="📊" FontSize="28"/>
+                                <Label Text="Synthèse" FontSize="16" FontAttributes="Bold" TextColor="White"/>
+                                <Label Text="Vue d'ensemble" FontSize="14" TextColor="#DDD6FE"/>
+                            </VerticalStackLayout>
+                        </Border>
+
+                    </Grid>
+                </VerticalStackLayout>
+
+                <!-- Dernières transactions -->
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Dernières transactions" Style="{StaticResource SectionTitle}"/>
+
+                    <CollectionView ItemsSource="{Binding DernieresTransactions}"
+                                    SelectionMode="None" HeightRequest="300">
+                        <CollectionView.EmptyView>
+                            <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="8">
+                                <Label Text="📭" FontSize="40" HorizontalOptions="Center"/>
+                                <Label Text="Aucune transaction ce mois-ci"
+                                       TextColor="{AppThemeBinding Light=#94A3B8, Dark=#4B5563}"
+                                       HorizontalOptions="Center" FontSize="14"/>
+                            </VerticalStackLayout>
+                        </CollectionView.EmptyView>
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame Style="{StaticResource Card}" Margin="0,4" Padding="14,12">
+                                    <Grid ColumnDefinitions="44,*,Auto" ColumnSpacing="12">
+
+                                        <!-- Icône catégorie -->
+                                        <Border Grid.Column="0"
+                                            StrokeShape="RoundRectangle 12"
+                                            StrokeThickness="0"
+                                            HeightRequest="44" WidthRequest="44">
+                                            <Border.BackgroundColor>
+                                                <AppThemeBinding Light="#F0F4FF" Dark="#1E2A3A"/>
+                                            </Border.BackgroundColor>
+                                            <Label Text="{Binding CategorieIcone}" FontSize="20"
+                                            HorizontalOptions="Center"
+                                            VerticalOptions="Center"/>
+                                        </Border>
+
+                                        <!-- Description + date -->
+                                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="2">
+                                            <Label Text="{Binding Description}"
+                                                   FontSize="14" FontAttributes="Bold"
+                                                   TextColor="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"
+                                                   LineBreakMode="TailTruncation"/>
+                                            <Label Text="{Binding Date, StringFormat='{0:dd MMM yyyy}'}"
+                                                   FontSize="12"
+                                                   TextColor="{AppThemeBinding Light=#94A3B8, Dark=#4B5563}"/>
+                                        </VerticalStackLayout>
+
+                                        <!-- Montant -->
+                                        <Label Grid.Column="2"
+                                               Text="{Binding MontantFormate}"
+                                               FontSize="15" FontAttributes="Bold"
+                                               TextColor="{Binding CouleurType}"
+                                               VerticalOptions="Center"/>
+
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </RefreshView>
+
+</ContentPage>

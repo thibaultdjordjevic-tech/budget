@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Application xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:conv="clr-namespace:BudgetControl.Converters"
+             x:Class="BudgetControl.App">
+
+    <Application.Resources>
+        <ResourceDictionary>
+
+            <!-- ══════════════════════════════════════════════════════
+                 CONVERTERS
+            ══════════════════════════════════════════════════════ -->
+            <conv:StringToBoolConverter    x:Key="StringToBoolConverter"/>
+            <conv:InverseBoolConverter     x:Key="InverseBoolConverter"/>
+            <conv:IdToBoolConverter        x:Key="IdToBoolConverter"/>
+            <conv:IdToTitleConverter       x:Key="IdToTitleConverter"/>
+            <conv:MonthToIndexConverter    x:Key="MonthToIndexConverter"/>
+            <conv:RevenusProgressConverter  x:Key="RevenusProgressConverter"/>
+            <conv:DepensesProgressConverter x:Key="DepensesProgressConverter"/>
+
+            <!-- ══════════════════════════════════════════════════════
+                 PALETTE STATIQUE
+            ══════════════════════════════════════════════════════ -->
+            <Color x:Key="Primary">#4361EE</Color>
+            <Color x:Key="PrimaryDark">#364FC7</Color>
+            <Color x:Key="PrimaryLight">#748FFC</Color>
+            <Color x:Key="GradientEnd">#5E35B1</Color>
+
+            <Color x:Key="IncomeGreen">#06D6A0</Color>
+            <Color x:Key="IncomeGreenDark">#05B386</Color>
+            <Color x:Key="ExpenseRed">#FF6B6B</Color>
+            <Color x:Key="ExpenseRedDark">#E05252</Color>
+            <Color x:Key="WarningAmber">#FFB627</Color>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STYLES GLOBAUX (dark mode via AppThemeBinding)
+            ══════════════════════════════════════════════════════ -->
+
+            <!-- Page background -->
+            <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light=#F0F4FF, Dark=#0D1117}"/>
+            </Style>
+
+            <!-- Label de base -->
+            <Style TargetType="Label">
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                <Setter Property="FontFamily" Value="OpenSansRegular"/>
+            </Style>
+
+            <!-- Entry de base -->
+            <Style TargetType="Entry">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                <Setter Property="PlaceholderColor"
+                        Value="{AppThemeBinding Light=#9CA3AF, Dark=#6B7280}"/>
+                <Setter Property="HeightRequest" Value="48"/>
+                <Setter Property="FontSize" Value="15"/>
+            </Style>
+
+            <!-- DatePicker -->
+            <Style TargetType="DatePicker">
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
+
+            <!-- ══════════════════════════════════════════════════════
+                 STYLES NOMMÉS
+            ══════════════════════════════════════════════════════ -->
+
+            <!-- Bouton principal -->
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="{StaticResource Primary}"/>
+                <Setter Property="TextColor"       Value="White"/>
+                <Setter Property="CornerRadius"    Value="14"/>
+                <Setter Property="HeightRequest"   Value="52"/>
+                <Setter Property="FontAttributes"  Value="Bold"/>
+                <Setter Property="FontSize"        Value="15"/>
+            </Style>
+
+            <!-- Bouton secondaire (outline) -->
+            <Style x:Key="SecondaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light=#EEF2FF, Dark=#1E2A3A}"/>
+                <Setter Property="TextColor" Value="{StaticResource Primary}"/>
+                <Setter Property="CornerRadius"    Value="14"/>
+                <Setter Property="HeightRequest"   Value="52"/>
+                <Setter Property="FontAttributes"  Value="Bold"/>
+                <Setter Property="FontSize"        Value="15"/>
+            </Style>
+
+            <!-- Carte standard -->
+            <Style x:Key="Card" TargetType="Frame">
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light=#FFFFFF, Dark=#161B22}"/>
+                <Setter Property="BorderColor"
+                        Value="{AppThemeBinding Light=#E8ECF4, Dark=#30363D}"/>
+                <Setter Property="CornerRadius" Value="16"/>
+                <Setter Property="HasShadow"    Value="True"/>
+                <Setter Property="Padding"      Value="16"/>
+            </Style>
+
+            <!-- Titre de section -->
+            <Style x:Key="SectionTitle" TargetType="Label">
+                <Setter Property="FontSize"       Value="17"/>
+                <Setter Property="FontAttributes" Value="Bold"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light=#1A1A2E, Dark=#E6EDF3}"/>
+            </Style>
+
+            <!-- Texte secondaire -->
+            <Style x:Key="SecondaryText" TargetType="Label">
+                <Setter Property="FontSize" Value="13"/>
+                <Setter Property="TextColor"
+                        Value="{AppThemeBinding Light=#64748B, Dark=#8B949E}"/>
+            </Style>
+
+            <!-- Champ de saisie (conteneur Border) -->
+            <Style x:Key="InputBorder" TargetType="Border">
+                <Setter Property="StrokeShape"    Value="RoundRectangle 12"/>
+                <Setter Property="StrokeThickness" Value="1"/>
+                <Setter Property="Stroke"
+                        Value="{AppThemeBinding Light=#E2E8F0, Dark=#30363D}"/>
+                <Setter Property="BackgroundColor"
+                        Value="{AppThemeBinding Light=#F8FAFC, Dark=#161B22}"/>
+                <Setter Property="Padding"        Value="14,0"/>
+            </Style>
+
+            <!-- Shell navigation -->
+            <Style TargetType="Shell" ApplyToDerivedTypes="True">
+                <Setter Property="Shell.BackgroundColor"
+                        Value="{AppThemeBinding Light=#4361EE, Dark=#161B22}"/>
+                <Setter Property="Shell.ForegroundColor"   Value="White"/>
+                <Setter Property="Shell.TitleColor"        Value="White"/>
+                <Setter Property="Shell.TabBarBackgroundColor"
+                        Value="{AppThemeBinding Light=#FFFFFF, Dark=#161B22}"/>
+                <Setter Property="Shell.TabBarForegroundColor"
+                        Value="{AppThemeBinding Light=#4361EE, Dark=#748FFC}"/>
+                <Setter Property="Shell.TabBarUnselectedColor"
+                        Value="{AppThemeBinding Light=#9CA3AF, Dark=#4B5563}"/>
+                <Setter Property="Shell.TabBarTitleColor"
+                        Value="{AppThemeBinding Light=#4361EE, Dark=#748FFC}"/>
+            </Style>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
